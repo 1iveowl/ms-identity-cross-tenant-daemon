@@ -7,7 +7,7 @@ using Options;
 
 // .NET 6 - See https://aka.ms/new-console-template for more information
 
-// Read configuration settings.
+// Reading configuration settings.
 var builder = new ConfigurationBuilder()
     .SetBasePath(System.IO.Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.Development.json", optional: false)
@@ -18,14 +18,12 @@ var configuration = builder.Build();
 var deamonAppSettings = configuration
     .GetSection(DaemonAppOptions.DaemonAppSettings);
 
-
 var azureAppRegistration = configuration
     .GetSection(AzureAdOptions.AzureAdAppRegistration);
 
 var tenantId = deamonAppSettings.GetSection(nameof(DaemonAppOptions.TenantId)).Value;
 var clientId = azureAppRegistration.GetSection(nameof(AzureAdOptions.ClientId)).Value;
 var secret = azureAppRegistration.GetSection(nameof(AzureAdOptions.ClientSecret)).Value;
-
 
 // #1 let's first get the access token so that we can examine it.
 var accessToken = await GetAccessToken();
@@ -52,10 +50,9 @@ async Task WriteAllUserNamesInTenantFromMSGraph()
 
     var graphClient = new GraphServiceClient(clientSecretCredentials);
 
-    var users = await graphClient.Users.Request().GetAsync();
+    var allUsers = await graphClient.Users.Request().GetAsync();
 
-
-    foreach (var user in users)
+    foreach (var user in allUsers)
     {
         Console.WriteLine(user.DisplayName);
     }
