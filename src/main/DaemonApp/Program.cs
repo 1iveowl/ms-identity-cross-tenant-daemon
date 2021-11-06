@@ -26,6 +26,7 @@ var clientId = azureAppRegistration.GetSection(nameof(AzureAdOptions.ClientId)).
 var secret = azureAppRegistration.GetSection(nameof(AzureAdOptions.ClientSecret)).Value;
 
 // #1 let's first get the access token so that we can examine it.
+
 var accessToken = await GetAccessToken();
 Console.WriteLine($"Access Token (Decode token using https://jwt.ms)\r\n{accessToken}\r\n");
 
