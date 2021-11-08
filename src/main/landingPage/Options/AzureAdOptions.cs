@@ -5,7 +5,7 @@
         public const string AzureAdAppRegistration = nameof(AzureAdAppRegistration);
 
         public string? Instance { get; init; }
-        public Guid TenantId { get; init; }
+        public string? TenantId { get; init; }
         public Guid ClientId { get; init; }
         public string? ClientSecret { get; init; }
         public string? Audience { get; init; }

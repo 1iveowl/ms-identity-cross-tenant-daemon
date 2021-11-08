@@ -13,3 +13,9 @@ The app will then be able to run in a non-interactive process in your tenant and
 ### Scenario
 
 The app is a multi-tenant app.
+
+
+
+
+
+Using [Razor](https://docs.microsoft.com/en-us/dotnet/architecture/porting-existing-aspnet-apps/comparing-razor-pages-aspnet-mvc).
