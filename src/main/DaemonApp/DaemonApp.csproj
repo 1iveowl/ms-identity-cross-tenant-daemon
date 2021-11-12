@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.Graph" Version="4.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Graph" Version="4.10.0" />
   </ItemGroup>
 
   <ItemGroup>

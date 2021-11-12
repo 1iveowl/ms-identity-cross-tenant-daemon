@@ -13,16 +13,22 @@ namespace LandingPage.Pages
     public class WelcomeModel : PageModel
     {
         private readonly IOptions<AzureAdOptions> _azureAdOptions;
+        private readonly IOptions<DaemonPermissionOptions> _daemonPermissions;
         private readonly ILogger<IndexModel> _logger;
 
         [BindProperty]
         public string? TenantId { get; private set; } = "<Something went wrong.>";
 
+        [BindProperty]
+        public string? Permission { get; private set; } = "empty";
+
         public WelcomeModel(
             IOptions<AzureAdOptions> azureAdOptions, 
+            IOptions<DaemonPermissionOptions> daemonPermissionOptions,
             ILogger<IndexModel> logger)
         {
             _azureAdOptions = azureAdOptions;
+            _daemonPermissions = daemonPermissionOptions;
             _logger = logger;
         }
 
@@ -30,6 +36,8 @@ namespace LandingPage.Pages
         public async Task<IActionResult> OnGet()
         {
             TenantId = HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
+
+            Permission = _daemonPermissions.Value.Scopes;
 
             return Page();
         }

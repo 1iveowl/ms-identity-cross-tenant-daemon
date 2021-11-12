@@ -7,7 +7,6 @@ using Options;
 
 // .NET 6 - See https://aka.ms/new-console-template for more information
 
-// Reading configuration settings.
 var builder = new ConfigurationBuilder()
     .SetBasePath(System.IO.Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.Development.json", optional: false)

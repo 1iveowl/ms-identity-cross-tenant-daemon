@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Options;
+using System.Net;
 
 namespace LandingPage.Pages
 {
@@ -19,7 +20,11 @@ namespace LandingPage.Pages
         private readonly IOptions<DaemonPermissionOptions> _daemonPermissionOptions;
         private readonly ILogger<IndexModel> _logger;
 
-        public User UserDetails { get; private set; }
+        [BindProperty]
+        public User? UserDetails { get; private set; }
+
+        [BindProperty]
+        public bool IsRoleAssigned { get; private set; } = default;
 
         public AppRoleAssignmentModel(
             GraphServiceClient graphServiceClient,
@@ -70,9 +75,20 @@ namespace LandingPage.Pages
                     AppRoleId = appRoleId
                 };
 
-                var result = await _graphServiceClient.ServicePrincipals[graphServicePrincipalId].AppRoleAssignments
-                    .Request()
-                    .AddAsync(appRoleAssignment);
+                try
+                {
+                    var result = await _graphServiceClient.ServicePrincipals[graphServicePrincipalId].AppRoleAssignments
+                        .Request()
+                        .AddAsync(appRoleAssignment);
+
+                    IsRoleAssigned = true;
+                }
+                catch (ServiceException serviceException)
+                    when (serviceException.StatusCode is HttpStatusCode.BadRequest 
+                        && serviceException.Error.Details.Any(d => d.Message.Contains("Permission being assigned already exists on the object")))
+                {
+                    IsRoleAssigned = false;
+                }
             }
 
             return Page();
