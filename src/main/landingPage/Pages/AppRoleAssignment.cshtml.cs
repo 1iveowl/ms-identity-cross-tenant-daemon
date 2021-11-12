@@ -13,7 +13,7 @@ namespace LandingPage.Pages
     [AuthorizeForScopes(Scopes = new[] { "User.Read", "AppRoleAssignment.ReadWrite.All", "Application.Read.All" })]
     public class AppRoleAssignmentModel : PageModel
     {
-        const string GraphResourceId = "00000003-0000-0000-c000-000000000000";
+        private const string GraphResourceId = "00000003-0000-0000-c000-000000000000";
 
         private readonly GraphServiceClient _graphServiceClient;
         private readonly IOptions<AzureAdOptions> _azureAdOptions;
