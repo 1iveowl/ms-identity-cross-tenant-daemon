@@ -47,3 +47,4 @@ To create a free Azure AD Tenant follow this [quickstart guide](https://docs.mic
 
 The multi-tenant app registration will be created in the new Azure AD tenant that was created in step 2.
 
+We will be using az cli to create the app registration. 
