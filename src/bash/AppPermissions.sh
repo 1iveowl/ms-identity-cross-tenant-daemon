@@ -14,7 +14,7 @@ appId="0fa4918a-446d-438b-af46-56057b03eed6"
 graphApplicationPermission="User.Read.All"
 
 # The resource id of Microsoft Graph.
-graphResourceId="00000003-0000-0000-c000-000000000000"
+graphClientId="00000003-0000-0000-c000-000000000000"
 
 #####################
 # Collect variables #
@@ -24,10 +24,10 @@ graphResourceId="00000003-0000-0000-c000-000000000000"
 principalId="$( az ad sp show --id $appId --query "objectId" -o tsv )"
 
 # The object id for the Graph Resource in the tenant 
-resourceId="$( az ad sp show --id "$graphResourceId" --query "objectId" -o tsv )"
+resourceId="$( az ad sp show --id "$graphClientId" --query "objectId" -o tsv )"
 
 # The application role id for the permission
-permissionId="$( az ad sp show --id $graphResourceId --query "appRoles[?value=='$graphApplicationPermission'].id" -o tsv )"
+permissionId="$( az ad sp show --id $graphClientId --query "appRoles[?value=='$graphApplicationPermission'].id" -o tsv )"
 
 echo "Service Principal Object Id:                            $principalId"
 echo "Object Id of the Microsoft Graph API Service Principal: $resourceId"

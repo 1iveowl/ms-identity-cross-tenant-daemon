@@ -9,7 +9,7 @@ using Options;
 namespace LandingPage.Pages
 {
     [Authorize]
-    [AuthorizeForScopes(Scopes = new[] { "User.Read" })]
+    [AuthorizeForScopes(Scopes = new[] { "User.Read", "AppRoleAssignment.ReadWrite.All", "Application.Read.All" })]
     public class WelcomeModel : PageModel
     {
         private readonly IOptions<AzureAdOptions> _azureAdOptions;
