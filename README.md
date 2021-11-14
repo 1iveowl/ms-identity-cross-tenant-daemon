@@ -53,15 +53,21 @@ or download and exact the repository .zip file.
 
 To create a free Azure AD Tenant follow this [quickstart guide](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-access-create-new-tenant).
 
-We will use this new tenant as the home tenant for the app we will be creating.
+Note down the tenant id and the domain name for the new tenant. We will use this new tenant as the home tenant for the app that we will be creating.
 
 ### Step 3: Create multi-tenant app registration
 
 The multi-tenant app registration will be created in the new Azure AD tenant that was created in step 2.
 
-We will be using [az cli](https://docs.microsoft.com/en-us/cli/azure/) and linux bash to create the app registration. If you're running Windows 10 or 11 you can run bash in [WSL 2 (Windows Subsystem for Linux, version 2)]([Windows Subsystem for Linux Documentation | Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/)).
+We will be using [az cli](https://docs.microsoft.com/en-us/cli/azure/) and Linux bash to create the app registration. If you're running Windows 10 or 11 you can run bash in [WSL 2 (Windows Subsystem for Linux, version 2)]([Windows Subsystem for Linux Documentation | Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/)). 
 
-Please ensure that you have the most recent version of az cli, which can be tested by running ```az --version```. This samples was created with version 2.30.0. If you have an older version please run  ```az upgrade``` to upgrade to the latest version.
+To install az cli, pick your OS:
+
+- [Install the Azure CLI for Windows | Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli)
+- [Install the Azure CLI on macOS | Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos)
+- [Install the Azure CLI on Linux | Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
+
+If you already installed az cli earlier, please ensure that you have the most recent version of az cli, which can be tested by running ```az --version```. This samples was created with version 2.30.0. If you have an older version please run  ```az upgrade``` to upgrade to the latest version.
 
 To sign into the second tenant you created, please use this az command:
 
@@ -187,3 +193,62 @@ API Permissions will look like this:
 
 ### Step 4:  Configure the landing page web app and the daemon app
 
+Now we are ready to complete the configuration of the two Visual Studio projects - i.e., the LandingPage web app and the DaemonApp console app. 
+
+1. Open the CrossTenant solution in Visual Studio 2022.
+
+2. In the LandingPage Project copy the file ```appsettings.json``` to a new file and name it ```appsettings.Development.json```.
+
+3. Edit the new file ```appsettings.Development.json``` to fill out the three missing values for the `AzureAdAppRegistration` object:
+
+   ```json
+   {
+     "Logging": {
+       "LogLevel": {
+         "Default": "Information",
+         "Microsoft.AspNetCore": "Warning"
+       }
+     },
+     "AllowedHosts": "*",
+     "AzureAdAppRegistration": {
+       "Instance": "https://login.microsoftonline.com/",
+       "TenantId": "organizations",
+       "Domain": "<domain name of newly created tenant - somthing.onmicrosoft.com>", // 1
+       "ClientId": "<appId of created multi-tenant app>", // 2
+       "ClientSecret": "<client secret credentials for multi-tenant app>", // 3
+       "CallbackPath": "/signin-oidc",
+       "Scopes": ".default"
+     },
+     "MSGraphSettings": {
+       "BaseUrl": "https://graph.microsoft.com/v1.0",
+       "Scopes": "User.Read AppRoleAssignment.ReadWrite.All Application.Read.All"
+     },
+     "DaemonPermissions": {
+       "Scopes": "User.Read.All"
+     }
+   }
+   ```
+
+   **Note:** Notice that there is a relative link to the `appsettings.Development.json` file in the LandingPage project in the DaemonApp Project. None of the two projects will be able to run successfully before this file has been created. For details see `DaemonApp.csproj`:
+
+   ```xml
+   ...
+   <ItemGroup>
+       <Content Include="..\landingPage\appsettings.Development.json" Link="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
+   </ItemGroup>
+   ...
+   ```
+
+4. The final step is to open the file `daemonAppSettings.json` file in the DaemonApp Project. In this file add the tenant id for the user that will sigh-up for the ISV app. If you have administrator rights in you default Azure tenant, then you could log in with your default user or a user created in that tenant. If not, you can create yet another free Azure AD tenant that you control and create a user in that tenant that you can use for testing the cross tenant daemon app.
+
+   ```json
+   {
+     "DaemonAppSettings": {    
+       "TenantId": "<tenant id of your default tenant or some other tentant that is NOT the newly created tenant with the multi-tenant app registration you just created"
+     }
+   }
+   ```
+
+   ### Step 5: Running the sample
+
+   
