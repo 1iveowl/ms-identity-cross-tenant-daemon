@@ -11,11 +11,11 @@ This sample shows how an ISV can create a SaaS app where customers can sign-up t
 The sign-up flow looks like this, at a high level:
 
 1. The ISV creates a multi-tenant app registration in the ISV's home tenant.
-2. The customer signs up to the app by visiting the ISV's app **landing page**. 
-2. Due to the long-running and non-interactive nature of the data access needed, it will in most cases - if not all cases - need to be an administrator from the customers own tenant that does the sign-up, for the app.
+2. The customer signs up to the app by visiting the ISV's app **Landing Page**. 
+2. Due to the long-running and non-interactive nature of the data access needed, it has to be an administrator from the customers own tenant that does the sign-up, for the app.
 3. As part of the sign-up process, the customer administrator will be asked to consent to a set of delegate permissions. For more details about delegate and application permissions see: [Permission Types](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#permission-types).
-4. As the customer provide their consent to these permissions, a [service principal](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals) for the ISV app will automatically be created in the customers own tenant. This service principal is a representation of the app in the customers own tenant.
-5. To ensure that the service principal have the needed application permissions to access data from a non-interactive sessions, one or more application permissions now need to be granted for this service principal. This process is typically referred to as: [App Role Assignment](https://docs.microsoft.com/en-us/graph/api/serviceprincipal-post-approleassignments?view=graph-rest-1.0&tabs=http). App role assignments can be done manually by the customer Azure administrator using [az cli](https://docs.microsoft.com/en-us/cli/azure/),  or it can be done via ISV's landing page on behalf of the user usin Microsoft Graph, providing that the user have consented to the needed delegate permissions for doing service principal app role assignments.
+4. As the customer provide their consent to these delegate permissions, a [service principal](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals) for the ISV app will automatically be created in the customers own tenant.
+5. To ensure that the service principal have the needed application permissions to access data in a non-interactive sessions, one or more application permissions now need to be granted for this service principal. This process is typically referred to as: [App Role Assignment](https://docs.microsoft.com/en-us/graph/api/serviceprincipal-post-approleassignments?view=graph-rest-1.0&tabs=http). App role assignments can be done manually by the customer Azure administrator using [az cli](https://docs.microsoft.com/en-us/cli/azure/), or it can be done via ISV's landing page on behalf of the user using Microsoft Graph, providing that the user have consented to the needed delegate permissions for doing service principal app role assignments.
 
 After the sign-up process have been completed successfully, a daemon app can now be run by the ISV in the ISV's own Azure subscription. 
 
@@ -27,7 +27,7 @@ The daemon app will need the following credential settings to run:
 
 With these settings the daemon app is able to use the [Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-overview) to get an access token that can be used for for accessing the desired customer data.  
 
-Notice that no client secrets (or certificates) need to be exchanged between the ISV and the customer for running the daemon app. This makes the approach secure and easy to manage for ISVs. Additionally, the customer remains in control, as the the custom can at any time delete the service principal in the customers own tenant, which will revoke the daemon app access and permissions.
+Notice that no client secrets (or certificates) need to be exchanged between the ISV and the customer for running the daemon app. This makes the approach secure and easy to manage for ISVs. Additionally, the customer remains in control, as the the custom can at any time delete the service principal for the app in the customers own tenant, which will revoke the daemon app's access and permissions.
 
 ### How to run this sample
 
@@ -35,7 +35,7 @@ To run this sample you'll need:
 
 - Visual Studio 2022
 - An internet connection
-- Two Azure AD tenants. You can use your existing Azure AD tenant and create a second free tenant if you do not already have one, as explained below.
+- Two Azure AD tenants. You can use your existing default Azure AD tenant and create a second free tenant if you do not already have a second one at hand. The process for creating a second Azure AD tenant is explained below.
 
 #### Step 1: Clone this tenant
 
@@ -45,7 +45,7 @@ From your shell or command line:
 git clone https://github.com/Azure-Samples/ms-identity-cross-tenant-daemon.git
 ```
 
-or download and exact the repository .zip file.
+... or download and exact the repository .zip file.
 
 > Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
@@ -59,7 +59,9 @@ Note down the tenant id and the domain name for the new tenant. We will use this
 
 The multi-tenant app registration will be created in the new Azure AD tenant that was created in step 2.
 
-We will be using [az cli](https://docs.microsoft.com/en-us/cli/azure/) and Linux bash to create the app registration. If you're running Windows 10 or 11 you can run bash in [WSL 2 (Windows Subsystem for Linux, version 2)]([Windows Subsystem for Linux Documentation | Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/)). 
+We will be using [az cli](https://docs.microsoft.com/en-us/cli/azure/) and Linux bash to create the app registration. 
+
+If you're running Windows 10 or 11 you can run bash in [WSL 2 (Windows Subsystem for Linux, version 2)]([Windows Subsystem for Linux Documentation | Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/)). 
 
 To install az cli, pick your OS:
 
@@ -67,15 +69,17 @@ To install az cli, pick your OS:
 - [Install the Azure CLI on macOS | Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos)
 - [Install the Azure CLI on Linux | Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
 
-If you already installed az cli earlier, please ensure that you have the most recent version of az cli, which can be tested by running ```az --version```. This samples was created with version 2.30.0. If you have an older version please run  ```az upgrade``` to upgrade to the latest version.
+If you've already installed az cli earlier, please ensure that you have the most recent version of az cli by running the command: ```az --version```. 
 
-To sign into the second tenant you created, please use this az command:
+This samples was created with version 2.30.0. If you have an older version please run  ```az upgrade``` to upgrade to the latest version.
+
+To sign into the second tenant you've just created, please use this az command:
 
 ````bash
 az login --tenant <tenant id or primary domain name of newly created 2nd tenant> --allow-no-subscriptions
 ````
 
-If successful this should output:
+If successful this will output:
 
 ```json
 [
@@ -94,7 +98,7 @@ If successful this should output:
 ]
 ```
 
-Now let's create the multi-tenant app registration for the app, by running this az command. 
+Now let's create the multi-tenant app registration for the multi-tenant app, by running these bash/az commands:
 
 ```bash
 appId="$( az ad app create \
@@ -160,7 +164,7 @@ az ad app permission add --id $appId \
   --api-permissions $appRoleAssignReadWriteAllId=Scope
 ```
 
-Our app registration configuration is now completed. Only thing we need to do, is to get a ```client secret``` (or a certificate) that our landing page web app and our daemon need for credentialling.   
+The final step we need to complete for our app registration to be complete is to get a ```client secret``` (or a certificate) that our landing page web app and our daemon will use as credentials.   
 
 To get a client secret run this az command:
 
@@ -179,13 +183,11 @@ This will output:
 }
 ```
 
-Note down the password, as you will need it in a minute, and there is no way to request it again. If you loose it, you can however run the az command again to create a new.
+Note down the value of password, as you will need it in a minute, and there is no way to request it again. If you loose it, you can however run the az command again to create a new.
 
-Now if you visit the Azure Portal and switch to your newly created tenant you should see the new App Registration under **App Registrations** in the Azure Active Directory. If you don't see it, choose the **All applications** tab.
+Now if you visit the Azure Portal and switch to your newly created tenant you should see the new App Registration under **App Registrations** in the Azure Active Directory. If you don't see it, choose the **All applications** tab.![Screenshot: App Registrations Page](.\assets\AppReg.jpg)
 
-Authentication will look like this:
-
-![Screenshot: Authentication](.\assets\Auth.jpg)
+Authentication will look like this:![Screenshot: Authentication](.\assets\Auth.jpg)
 
 API Permissions will look like this:
 
@@ -274,3 +276,4 @@ The JWT access token can be explored using https://jwt.ms. Notice that the acces
 ### Step 6: Go explorer the code
 
 Voila! Happy coding.
+
