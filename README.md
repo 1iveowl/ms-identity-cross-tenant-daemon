@@ -2,7 +2,7 @@
 
 ## About this sample
 
-This sample is written with [ASP.NET Core 6](https://devblogs.microsoft.com/dotnet/announcing-asp-net-core-in-net-6/) with [Razor](https://docs.microsoft.com/en-us/dotnet/architecture/porting-existing-aspnet-apps/comparing-razor-pages-aspnet-mvc) and [Microsof Identity Web authentication library (Identity.Web)](https://docs.microsoft.com/en-us/azure/active-directory/develop/microsoft-identity-web). The Daemon app uses [Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-overview).
+This sample is written with [ASP.NET Core 6](https://devblogs.microsoft.com/dotnet/announcing-asp-net-core-in-net-6/) with [Razor](https://docs.microsoft.com/en-us/dotnet/architecture/porting-existing-aspnet-apps/comparing-razor-pages-aspnet-mvc) and [Microsoft Identity Web authentication library (Identity.Web)](https://docs.microsoft.com/en-us/azure/active-directory/develop/microsoft-identity-web). The Daemon app uses [Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-overview).
 
 ### Overview
 
@@ -249,6 +249,28 @@ Now we are ready to complete the configuration of the two Visual Studio projects
    }
    ```
 
-   ### Step 5: Running the sample
+   > TIP: The LandingPage web app will display the tenant of the user you sign in with. 
 
-   
+### Step 5: Running the sample
+
+> TIP: When you launch the LandingPage web app, do so with a browser in [incognito mode](https://www.hanselman.com/blog/visual-studio-web-development-tip-add-chrome-incognito-mode-as-a-browser). This way you avoid issues with already logged in users and cached tokens. 
+
+To run the sample, first run the LandingPage web app. 
+
+![Screenshot: Sign Up Page](.\assets\SignUp.jpg)
+
+![Screenshot: Welcome Page](.\assets\Welcome.jpg)
+
+![Screenshot: App Role Page](.\assets\AppRole.jpg)
+
+Now run the DaemonApp console app, which will show something like this:
+
+![Screenshot: App Role Page](.\assets\console.jpg)
+
+The JWT access token can be explored using https://jwt.ms. Notice that the access token includes the app role assignment `User.Read.All`, as requested in the app. 
+
+![Screenshot: App Role Page](.\assets\access_token.jpg)
+
+### Step 6: Go explorer the code
+
+Voila! Happy coding.
