@@ -185,13 +185,11 @@ This will output:
 
 Note down the value of password, as you will need it in a minute, and there is no way to request it again. If you loose it, you can however run the az command again to create a new.
 
-Now if you visit the Azure Portal and switch to your newly created tenant you should see the new App Registration under **App Registrations** in the Azure Active Directory. If you don't see it, choose the **All applications** tab.![Screenshot: App Registrations Page](.\assets\AppReg.jpg)
+Now if you visit the Azure Portal and switch to your newly created tenant you should see the new App Registration under **App Registrations** in the Azure Active Directory. If you don't see it, choose the **All applications** tab.![Screenshot: App Registrations Page](./assets/AppReg.jpg)
 
-Authentication will look like this:![Screenshot: Authentication](.\assets\Auth.jpg)
+Authentication will look like this:![Screenshot: Authentication](./assets/Auth.jpg)
 
-API Permissions will look like this:
-
-![Screenshot: API Permissions](.\assets\API_Permissions.jpg)
+API Permissions will look like this:![Screenshot: API Permissions](./assets/API_Permissions.jpg)
 
 ### Step 4:  Configure the landing page web app and the daemon app
 
@@ -259,19 +257,19 @@ Now we are ready to complete the configuration of the two Visual Studio projects
 
 To run the sample, first run the LandingPage web app. 
 
-![Screenshot: Sign Up Page](.\assets\SignUp.jpg)
+![Screenshot: Sign Up Page](./assets/SignUp.jpg)
 
-![Screenshot: Welcome Page](.\assets\Welcome.jpg)
+![Screenshot: Welcome Page](./assets/Welcome.jpg)
 
-![Screenshot: App Role Page](.\assets\AppRole.jpg)
+![Screenshot: App Role Page](./assets/AppRole.jpg)
 
 Now run the DaemonApp console app, which will show something like this:
 
-![Screenshot: App Role Page](.\assets\console.jpg)
+![Screenshot: App Role Page](./assets/console.jpg)
 
 The JWT access token can be explored using https://jwt.ms. Notice that the access token includes the app role assignment `User.Read.All`, as requested in the app. 
 
-![Screenshot: App Role Page](.\assets\access_token.jpg)
+![Screenshot: App Role Page](./assets/access_token.jpg)
 
 ### Step 6: Go explorer the code
 
