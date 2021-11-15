@@ -10,22 +10,22 @@ This sample shows how an ISV can create a SaaS app where customers can sign-up t
 
 The sign-up flow looks like this, at a high level:
 
-1. The ISV creates a multi-tenant app registration in the ISV's home tenant.
-2. The customer signs up to the app by visiting the ISV's app **Landing Page**. 
-2. Due to the long-running and non-interactive nature of the data access needed, it has to be an administrator from the customers own tenant that does the sign-up, for the app.
-3. As part of the sign-up process, the customer administrator will be asked to consent to a set of delegate permissions. For more details about delegate and application permissions see: [Permission Types](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#permission-types).
-4. As the customer provide their consent to these delegate permissions, a [service principal](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals) for the ISV app will automatically be created in the customers own tenant.
-5. To ensure that the service principal have the needed application permissions to access data in a non-interactive sessions, one or more application permissions now need to be granted for this service principal. This process is typically referred to as: [App Role Assignment](https://docs.microsoft.com/en-us/graph/api/serviceprincipal-post-approleassignments?view=graph-rest-1.0&tabs=http). App role assignments can be done manually by the customer Azure administrator using [az cli](https://docs.microsoft.com/en-us/cli/azure/), or it can be done via ISV's landing page on behalf of the user using Microsoft Graph, providing that the user have consented to the needed delegate permissions for doing service principal app role assignments.
+1. The ISV creates a multi-tenant app registration in the ISV's home Azure AD tenant.
+2. The customer signs up to the app by visiting a web app provided by the ISV - aka. **Landing Page**. 
+2. Due to the long-running and non-interactive nature of the data access needed, it has to be an administrator from the customers own tenant that does the sign-up for the app.
+3. As part of the app sign-up process, the customer administrator will be asked to consent to a set of delegate permissions. For more details about delegate and application permissions see: [Permission Types](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#permission-types).
+4. As the customer provide their consent to these delegate permissions, a [service principal](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals) for the ISV app will automatically be created in the customers own Azure AD tenant.
+5. To ensure that the service principal have the needed application permissions to access data in a non-interactive sessions, one or more application permissions now need to be granted for this service principal. This process is typically referred to as: [App Role Assignment](https://docs.microsoft.com/en-us/graph/api/serviceprincipal-post-approleassignments?view=graph-rest-1.0&tabs=http). App role assignments can be done manually by the customer Azure administrator using for instance [az cli](https://docs.microsoft.com/en-us/cli/azure/), or it can be done from ISV's Landing Page web app on behalf of the user with Microsoft Graph, providing that the user have consented to the aforementioned delegate permissions.
 
-After the sign-up process have been completed successfully, a daemon app can now be run by the ISV in the ISV's own Azure subscription. 
+After the sign-up process have been completed successfully, a daemon app can now be run by the ISV in the ISV's own Azure subscription - i.e., nothing need to be installed in the customers Azure subscription.
 
-The daemon app will need the following credential settings to run:
+The daemon app will need the following settings to run:
 
-- The tenant id of the customer tenant.
+- The tenant id of the customer Azure AD tenant.
 - The AppId (aka. Client Id) of the app - i.e., the multi-tenant app registration created by the ISV.
 - The Client Secret (or certificate) of the app - i.e., the multi-tenant app registration created by the ISV,
 
-With these settings the daemon app is able to use the [Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-overview) to get an access token that can be used for for accessing the desired customer data.  
+With these settings the daemon app is now able to use the [Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-overview) to get an access token that can be used for for accessing the desired customer data.  
 
 Notice that no client secrets (or certificates) need to be exchanged between the ISV and the customer for running the daemon app. This makes the approach secure and easy to manage for ISVs. Additionally, the customer remains in control, as the the custom can at any time delete the service principal for the app in the customers own tenant, which will revoke the daemon app's access and permissions.
 
