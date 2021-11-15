@@ -4,7 +4,7 @@ using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 
-var app = BuildApp();
+var app = BuildWebApp();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -27,7 +27,7 @@ app.MapRazorPages();
 app.Run();
 
 
-WebApplication BuildApp()
+WebApplication BuildWebApp()
 {
     const string settingsFile = "appsettings.Development.json";
 
@@ -36,7 +36,7 @@ WebApplication BuildApp()
 
     if (!File.Exists(settingsFile))
     {
-        throw new Exception($"Please create and fill the file { settingsFile }. See the readme for details.");
+        throw new Exception($"Please create and correctly fill out the file: {settingsFile}. See the readme for details.");
     }
 
     // Using the Options for settings: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0
